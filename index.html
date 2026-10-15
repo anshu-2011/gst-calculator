@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Financial & Percentage Calculator Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --primary-color: #3b5998;
+            --primary-hover: #324b81;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #dcdcdc;
+            --accent-color: #4e6e9d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, #3b5998 0%, #4e6e9d 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(59, 89, 152, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .promo-banner p {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            max-width: 500px;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .calculator-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 20px;
+            background: #e9ecef;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        @media(min-width: 520px) {
+            .tabs {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        .tab-btn {
+            padding: 9px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-light);
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fff;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn.primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn.secondary {
+            background-color: #e2e8f0;
+            color: var(--text-color);
+        }
+
+        .btn.secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .results-section {
+            margin-top: 25px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .results-section h3 {
+            font-size: 15px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .result-item.total {
+            font-weight: bold;
+            color: var(--text-color);
+            font-size: 16px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 8px;
+            margin-top: 5px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+
+        .info-section {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+        .info-section h3 {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .info-section p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .download-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .download-box h4 {
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        .download-box p {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        .download-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="promo-banner">
+            <h2>⚡ Smart Financial Suite Pro</h2>
+            <p>Empower your daily financial decisions with lightning-fast calculations. Trusted by thousands of smart savers, investors, and shoppers worldwide.</p>
+            <div class="feature-tags">
+                <span class="feature-tag">✨ Instant Breakdown</span>
+                <span class="feature-tag">🛡️ 100% Accurate</span>
+                <span class="feature-tag">🚀 Zero Ads / Free</span>
+                <span class="feature-tag">📱 Fully Mobile Friendly</span>
+            </div>
+        </div>
+
+        <div class="container">
+            <header>
+                <h1>Calculation Hub</h1>
+                <p>Select a facility below to begin your calculation</p>
+            </header>
+
+            <div class="calculator-card">
+                <div class="tabs" role="tablist" aria-label="Calculators">
+                    <button class="tab-btn active" onclick="switchTab('loan', this)" role="tab" aria-selected="true">Loan Calc</button>
+                    <button class="tab-btn" onclick="switchTab('percentage', this)" role="tab">Percentage</button>
+                    <button class="tab-btn" onclick="switchTab('tip', this)" role="tab">Tip & Split</button>
+                    <button class="tab-btn" onclick="switchTab('investment', this)" role="tab">Investment</button>
+                </div>
+
+                <!-- Loan Calculator Form -->
+                <div id="loan-tab" class="calc-form" aria-hidden="false">
+                    <div class="input-group">
+                        <label for="loan-amount">Loan Amount ($)</label>
+                        <input type="number" id="loan-amount" value="10000" min="0" />
+                    </div>
+                    <div class="input-group">
+                        <label for="interest-rate">Annual Interest Rate (%)</label>
+                        <input type="number" id="interest-rate" value="5" step="0.1" min="0" />
+                    </div>
+                    <div class="input-group">
+                        <label for="loan-term">Loan Term (Years)</label>
+                        <input type="number" id="loan-term" value="5" min="1" />
+                    </div>
+                </div>
+
+                <!-- Percentage Calculator Form -->
+                <div id="percentage-tab" class="calc-form" style="display: none;" aria-hidden="true">
+                    <div class="input-group">
+                        <label for="pct-mode">Calculation Type</label>
+                        <select id="pct-mode" onchange="updatePercentageLabels()">
+                            <option value="of">What is X% of Y?</option>
+                            <option value="what-pct">X is what % of Y?</option>
+                            <option value="change">Percentage Increase/Decrease</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label id="lbl-val1" for="pct-val1">Percentage (%) / Initial</label>
+                        <input type="number" id="pct-val1" value="20" />
+                    </div>
+                    <div class="input-group">
+                        <label id="lbl-val2" for="pct-val2">Total / Final Value</label>
+                        <input type="number" id="pct-val2" value="150" />
+                    </div>
+                </div>
+
+                <!-- Tip Calculator Form -->
+                <div id="tip-tab" class="calc-form" style="display: none;" aria-hidden="true">
+                    <div class="input-group">
+                        <label for="bill-amount">Bill Amount ($)</label>
+                        <input type="number" id="bill-amount" value="50" min="0" />
+                    </div>
+                    <div class="input-group">
+                        <label for="tip-percentage">Tip Percentage (%)</label>
+                        <input type="number" id="tip-percentage" value="15" min="0" />
+                    </div>
+                    <div class="input-group">
+                        <label for="split-count">Split Between (People)</label>
+                        <input type="number" id="split-count" value="1" min="1" />
+                    </div>
+                </div>
+
+                <!-- Investment Compound Calculator Form -->
+                <div id="investment-tab" class="calc-form" style="display: none;" aria-hidden="true">
+                    <div class="input-group">
+                        <label for="inv-principal">Initial Principal ($)</label>
+                        <input type="number" id="inv-principal" value="5000" min="0" />
+                    </div>
+                    <div class="input-group">
+                        <label for="inv-monthly">Monthly Contribution ($)</label>
+                        <input type="number" id="inv-monthly" value="200" min="0" />
+                    </div>
+                    <div class="input-group">
+                        <label for="inv-rate">Expected Annual Return (%)</label>
+                        <input type="number" id="inv-rate" value="8" step="0.1" min="0" />
+                    </div>
+                    <div class="input-group">
+                        <label for="inv-years">Time Horizon (Years)</label>
+                        <input type="number" id="inv-years" value="10" min="1" />
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn secondary" onclick="resetForm()">Reset</button>
+                    <button class="btn primary" onclick="calculate()">Calculate Now</button>
+                </div>
+
+                <div class="results-section">
+                    <h3>Summary Results</h3>
+                    <div id="results-content" aria-live="polite">
+                        <!-- Dynamic Results Output -->
+                    </div>
+                    <div class="button-group" style="margin-top: 15px;">
+                        <button class="btn secondary" style="font-size: 12px; padding: 8px;" onclick="copyResults()">📋 Copy Results</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>About Smart Financial Suite Pro</h3>
+            <p>Welcome to your premier destination for lightning-fast, highly accurate financial and percentage calculations. Designed for students, professionals, investors, and everyday shoppers, our platform eliminates complex math friction by providing instant breakdowns with zero clutter or intrusive ads.</p>
+            <p>Whether you are calculating monthly mortgage or loan payments, splitting restaurant bills among friends, analyzing compound interest on your investments, or performing percentage conversions, our suite guarantees precise formulas and intuitive responsive mobile designs.</p>
+        </div>
+
+        <div class="download-box">
+            <h4>📱 Take the App Offline</h4>
+            <p>Install Smart Financial Suite Pro directly to your desktop or mobile device for lightning-fast offline usage anytime, anywhere!</p>
+            <div class="download-btns">
+                <button class="btn primary" onclick="triggerDownload('PWA')">⚡ Install PWA App</button>
+                <button class="btn secondary" onclick="triggerDownload('Desktop')">💻 Download Desktop Bundle</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Results copied to clipboard!</div>
+
+    <script>
+        let currentTab = 'loan';
+
+        // Utilities
+        function parseNumber(value, fallback = 0) {
+            const n = parseFloat(value);
+            return isFinite(n) ? n : fallback;
+        }
+        function formatCurrency(num) {
+            if (!isFinite(num)) return '$0.00';
+            return '$' + Number(num).toFixed(2);
+        }
+        function showToast(message, duration = 2200) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        // Tab switching
+        function switchTab(tab, btn) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
+            if (btn) {
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+            }
+
+            const tabs = ['loan', 'percentage', 'tip', 'investment'];
+            tabs.forEach(t => {
+                const el = document.getElementById(t + '-tab');
+                if (t === tab) {
+                    el.style.display = 'block';
+                    el.setAttribute('aria-hidden', 'false');
+                } else {
+                    el.style.display = 'none';
+                    el.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            // Ensure labels and result updates
+            updatePercentageLabels();
+            calculate();
+        }
+
+        // Percentage labels behavior
+        function updatePercentageLabels() {
+            const mode = document.getElementById('pct-mode').value;
+            const l1 = document.getElementById('lbl-val1');
+            const l2 = document.getElementById('lbl-val2');
+            if (mode === 'of') {
+                l1.innerText = 'Percentage (%)';
+                l2.innerText = 'Of Value';
+            } else if (mode === 'what-pct') {
+                l1.innerText = 'Part Value (X)';
+                l2.innerText = 'Whole Value (Y)';
+            } else {
+                l1.innerText = 'Initial Value';
+                l2.innerText = 'Final Value';
+            }
+            calculate();
+        }
+
+        // Main calculator
+        function calculate() {
+            const container = document.getElementById('results-content');
+            container.innerHTML = ''; // clear
+
+            if (currentTab === 'loan') {
+                const principal = parseNumber(document.getElementById('loan-amount').value, 0);
+                const annualRate = parseNumber(document.getElementById('interest-rate').value, 0);
+                const years = parseNumber(document.getElementById('loan-term').value, 0);
+
+                const monthlyRate = annualRate / 100 / 12;
+                const totalPayments = Math.max(0, Math.round(years * 12));
+
+                let monthlyPayment = 0;
+                let totalPayment = 0;
+                let totalInterest = 0;
+
+                if (monthlyRate > 0 && totalPayments > 0) {
+                    const factor = Math.pow(1 + monthlyRate, totalPayments);
+                    monthlyPayment = (principal * monthlyRate * factor) / (factor - 1);
+                    totalPayment = monthlyPayment * totalPayments;
+                    totalInterest = totalPayment - principal;
+                } else {
+                    totalPayment = principal;
+                    monthlyPayment = totalPayments > 0 ? principal / totalPayments : 0;
+                    totalInterest = totalPayment - principal;
+                }
+
+                container.innerHTML = `
+                    <div class="result-item"><span>Monthly Payment:</span><span>${formatCurrency(monthlyPayment)}</span></div>
+                    <div class="result-item"><span>Total Interest:</span><span>${formatCurrency(totalInterest)}</span></div>
+                    <div class="result-item total"><span>Total Payment:</span><span>${formatCurrency(totalPayment)}</span></div>
+                `;
+            } else if (currentTab === 'percentage') {
+                const mode = document.getElementById('pct-mode').value;
+                const v1 = parseNumber(document.getElementById('pct-val1').value, 0);
+                const v2 = parseNumber(document.getElementById('pct-val2').value, 0);
+
+                let res1Label = 'Result';
+                let res1Val = '';
+                let res2Label = 'Note';
+                let res2Val = '';
+
+                if (mode === 'of') {
+                    const result = (v1 / 100) * v2;
+                    res1Label = `${v1}% of ${v2}`;
+                    res1Val = formatCurrency(result);
+                    res2Label = 'Remaining Balance';
+                    res2Val = formatCurrency(v2 - result);
+                } else if (mode === 'what-pct') {
+                    const pct = v2 !== 0 ? (v1 / v2) * 100 : 0;
+                    res1Label = 'Calculated Percentage';
+                    res1Val = (isFinite(pct) ? pct.toFixed(2) + '%' : 'N/A');
+                    res2Label = 'Ratio Fraction';
+                    res2Val = `${v1} / ${v2}`;
+                } else { // change
+                    const diff = v2 - v1;
+                    const pctChange = v1 !== 0 ? (diff / Math.abs(v1)) * 100 : NaN;
+                    res1Label = 'Absolute Change';
+                    res1Val = formatCurrency(diff);
+                    res2Label = 'Percentage Change';
+                    res2Val = isFinite(pctChange) ? pctChange.toFixed(2) + '%' : 'N/A';
+                }
+
+                container.innerHTML = `
+                    <div class="result-item"><span>${res1Label}:</span><span>${res1Val}</span></div>
+                    <div class="result-item total"><span>${res2Label}:</span><span>${res2Val}</span></div>
+                `;
+            } else if (currentTab === 'tip') {
+                const bill = parseNumber(document.getElementById('bill-amount').value, 0);
+                const tipPct = parseNumber(document.getElementById('tip-percentage').value, 0);
+                let split = Math.max(1, Math.round(parseNumber(document.getElementById('split-count').value, 1)));
+
+                const tipAmount = (tipPct / 100) * bill;
+                const total = bill + tipAmount;
+                const perPersonTotal = total / split;
+                const perPersonTip = tipAmount / split;
+
+                container.innerHTML = `
+                    <div class="result-item"><span>Tip Amount:</span><span>${formatCurrency(tipAmount)}</span></div>
+                    <div class="result-item"><span>Total Bill (incl. tip):</span><span>${formatCurrency(total)}</span></div>
+                    <div class="result-item total"><span>Per Person (${split}):</span><span>${formatCurrency(perPersonTotal)} <small style="color:var(--text-light)"> (tip ${formatCurrency(perPersonTip)})</small></span></div>
+                `;
+            } else if (currentTab === 'investment') {
+                const P = parseNumber(document.getElementById('inv-principal').value, 0);
+                const PMT = parseNumber(document.getElementById('inv-monthly').value, 0);
+                const annual = parseNumber(document.getElementById('inv-rate').value, 0);
+                const years = Math.max(0, parseNumber(document.getElementById('inv-years').value, 0));
+
+                const r = annual / 100 / 12; // monthly rate
+                const n = Math.round(years * 12);
+
+                let fv = 0;
+                if (r > 0) {
+                    const factor = Math.pow(1 + r, n);
+                    const fvP = P * factor;
+                    const fvPMT = PMT * ((factor - 1) / r);
+                    fv = fvP + fvPMT;
+                } else {
+                    // no growth
+                    fv = P + PMT * n;
+                }
+
+                const totalContrib = P + PMT * n;
+                const gain = fv - totalContrib;
+
+                container.innerHTML = `
+                    <div class="result-item"><span>Future Value:</span><span>${formatCurrency(fv)}</span></div>
+                    <div class="result-item"><span>Total Contributions:</span><span>${formatCurrency(totalContrib)}</span></div>
+                    <div class="result-item total"><span>Net Gain:</span><span>${formatCurrency(gain)}</span></div>
+                `;
+            }
+        }
+
+        // Copy results to clipboard
+        function copyResults() {
+            const container = document.getElementById('results-content');
+            const lines = [];
+            container.querySelectorAll('.result-item').forEach(item => {
+                const left = item.childNodes[0] ? item.childNodes[0].textContent.trim().replace(/\s+$/, '') : '';
+                const right = item.childNodes[1] ? item.childNodes[1].textContent.trim() : '';
+                lines.push(`${left} ${right}`);
+            });
+            const text = lines.join('\n');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Results copied to clipboard!');
+                }).catch(() => {
+                    showToast('Failed to copy — permission denied');
+                });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('Results copied to clipboard!');
+                } catch (e) {
+                    showToast('Copy not supported in this browser');
+                } finally {
+                    document.body.removeChild(ta);
+                }
+            }
+        }
+
+        // Reset all fields to defaults
+        function resetForm() {
+            document.getElementById('loan-amount').value = 10000;
+            document.getElementById('interest-rate').value = 5;
+            document.getElementById('loan-term').value = 5;
+
+            document.getElementById('pct-mode').value = 'of';
+            document.getElementById('pct-val1').value = 20;
+            document.getElementById('pct-val2').value = 150;
+
+            document.getElementById('bill-amount').value = 50;
+            document.getElementById('tip-percentage').value = 15;
+            document.getElementById('split-count').value = 1;
+
+            document.getElementById('inv-principal').value = 5000;
+            document.getElementById('inv-monthly').value = 200;
+            document.getElementById('inv-rate').value = 8;
+            document.getElementById('inv-years').value = 10;
+
+            updatePercentageLabels();
+            calculate();
+            showToast('Form reset to defaults');
+        }
+
+        // Simulated download/install actions
+        function triggerDownload(kind) {
+            if (kind === 'PWA') {
+                showToast('PWA install prompt (placeholder)');
+            } else if (kind === 'Desktop') {
+                showToast('Download started (placeholder)');
+            } else {
+                showToast('Starting download...');
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePercentageLabels();
+            calculate();
+
+            document.querySelectorAll('.calc-form input, .calc-form select').forEach(el => {
+                el.addEventListener('input', () => { calculate(); });
+            });
+        });
+    </script>
+</body>
+</html>
